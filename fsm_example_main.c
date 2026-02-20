@@ -57,13 +57,14 @@ void playUnlockJingle() {
 bool passcodeFSM(int guess) {
     static passcode_state_t currentState = SX;
 
-    bool unlock = false;
+    bool unlock = false; // if you assign you will have to type each time if something is false or true
+                         // but bc we stated this, we only have to state when something is truw
 
     printf ("current state is %d, input is %d", currentState, guess);
 
-    switch (currentState) {
-    case SX:
-        if (guess == PIN1st_DIGIT)
+    switch (currentState) { //programming the FSM, this initalizes all states and their requirements/outputs
+    case SX://initial state
+        if (guess == PIN1st_DIGIT) //prompting for 1st guess
             currentState = S1R;
         else
             currentState = S1W;
@@ -71,23 +72,23 @@ bool passcodeFSM(int guess) {
 
 
     case S1R:
-        if (guess == PIN2nd_DIGIT)
+        if (guess == PIN2nd_DIGIT) //when 1st guess was correct, now ready for 2nd guess
             currentState = S2R;
         else
             currentState = S2W;
         break;
 
     case S2R:
-        if (guess == PIN3rd_DIGIT)
+        if (guess == PIN3rd_DIGIT) //2nd guess was correct, prompt for 3rd guess
             currentState = S3R;
         else
             currentState = S3W;
         break;
 
     case S3R:
-        if (guess == PIN4th_DIGIT)
+        if (guess == PIN4th_DIGIT) //3rd guess was correct, prompt for 4th digits
         {
-            currentState = S4R;
+            currentState = S4R; //automatically unlocks
             unlock = true;
         }
         else
@@ -95,12 +96,12 @@ bool passcodeFSM(int guess) {
         break;
 
     case S4R:
-        currentState = SX;
+        currentState = SX;      //since it unlocked, the next output goes back to default
         break;
 
     case S1W:
-        currentState = S2W;
-        break;
+        currentState = S2W;//when the 1st digit was wrong, NO MATTER the input the over all passcode is still wrong
+        break; //therefore the only option is to continue to the wrong options
 
     case S2W:
         currentState = S3W;
